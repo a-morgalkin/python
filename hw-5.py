@@ -22,3 +22,6 @@ print(f'{a} в степени {b} равно: {raise_(a, b)}')
 # Также нельзя использовать циклы.
 sum_ = lambda a, b: (sum_(a-1, b) + 1 if a >= b else sum_(a, b-1) + 1) if a > 0 or b > 0 else 0
 print(f'{a} плюс {b} равно: {sum_(a, b)}')
+# другой вариант решения, алгоритм к сожалению не мой, chatGPT подсказал
+sun_ = lambda a, b: (b if a == 0 else a if b == 0 else sun_(a-1, b+1))
+print(f'{a} плюс {b} равно {sun_(a, b)}')
