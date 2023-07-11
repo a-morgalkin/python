@@ -74,8 +74,13 @@ def change_contact():
         print('!!! Контакта с таким ID нет в базе. Воспользуйтесь поиском...')
 
 def remove_contact():
-    remove_id = int(input('>>> Введите ID контакта для удаления > '))
-    phonebook.pop(remove_id)     
+    try:
+        remove_id = int(input('>>> Введите ID контакта для удаления > '))
+    except:
+        remove_id = -1
+    if phonebook.get(remove_id):
+        phonebook.pop(remove_id)
+        print('...Контакт удален')
 
 def pb_open():
     pb_file_name = input('>>> Введите имя файла [phonebook.txt] > ') or 'phonebook.txt'
