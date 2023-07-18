@@ -30,16 +30,17 @@ def pb_open(pb_file_name:str) -> bool:
     if isfile(pb_file_name):
         with open(pb_file_name, 'r', encoding='utf-8') as pb_file:
             phonebook.clear()
-            for i, line in enumerate(pb_file, 1):
-                phonebook[i] = line.strip().split(';')
+            for line in pb_file:
+                line_list = line.strip().split(';')
+                phonebook[line_list[0]] = line_list[1:]
             return True
     return False
 
 def pb_save(pb_file_name: str) -> bool:
     try:
         pb_file = open(pb_file_name, 'w', encoding='utf-8')
-        for _, contact in phonebook.items():
-            pb_file.write(';'.join(contact)+'\n')
+        for c_id, contact in phonebook.items():
+            pb_file.write(str(c_id)+';'+';'.join(contact)+'\n')
         pb_file.close()
         return True
     except:
