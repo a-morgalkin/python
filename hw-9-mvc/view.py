@@ -1,9 +1,59 @@
 import text
 menu_commands = ('open','save', 'print', 'append', 'find', 'change', 'remove', 'exit')
-menu = tuple(zip([item[0] for item in text.menu_items], text.menu_items, menu_commands))
-MENU_ID, MENU_TEXT, MENU_COMMAND = 0, 1, 2
-NAME, LAST_NAME, PHONE, TITLE  = 0, 1, 2, 3
 
+class MenuItem:
+    def __init__(self, id, name, command) -> None:
+        self.id = id
+        self.name = name
+        self.command = command
+        self.next = None
+
+class Menu:
+    def __init__(self, title, prompt = text.prompt_msg) -> None:
+        self.title_txt = title
+        self.prompt_txt = prompt
+        self.head = None
+
+    def additem(self, new_item: MenuItem) -> None:
+        if self.head:
+            current = self.head
+            while current.next:
+                current = current.next
+            current.next = new_item
+        else:
+            self.head = new_item
+
+    def show_menu(self) -> None:
+        print('\n' + self.title_txt)
+        print('-'*25)
+        if self.head:
+            current = self.head
+            while True:
+                print(current.name)
+                if not current.next:
+                    break
+                current = current.next
+
+    def whattodo(self) -> str:
+        item_id = input(self.prompt_txt)
+        if item_id == '0':
+            return 'menu'
+        if self.head:
+            current = self.head
+            while True:
+                if current.id == item_id:
+                    return current.command
+                if not current.next:
+                    break
+                current = current.next
+        return 'error'
+
+main_menu = Menu(text.menu_title_txt)
+for i in range(len(text.menu_items)):
+    main_menu.additem(MenuItem(text.menu_items[i][0],
+                               text.menu_items[i],
+                               menu_commands[i]))
+    
 def print_message(msg: str):
     print('... ' + msg)
 
@@ -11,17 +61,10 @@ def print_error(msg: str):
     print('!!! ' + msg)
 
 def print_menu():
-    for item in menu:
-        print(item[MENU_TEXT])
+    main_menu.show_menu()
 
 def prompt() -> str:
-    inp_str = input(text.prompt_msg)
-    for item in menu:
-        if inp_str == item[MENU_ID]:
-            return item[MENU_COMMAND]
-    if inp_str == '0':
-        return 'menu'
-    return 'error'
+    return main_menu.whattodo()
 
 def print_contact(contact_id, phonebook):
     print(contact_id, *phonebook[contact_id], sep='\t')
@@ -56,13 +99,13 @@ def input_contact_changes(contact_id, phonebook) -> tuple:
     if phonebook.get(contact_id):
         print_contact(contact_id, phonebook)
         new_name = input(text.input_changed_name_txt
-                        ) or phonebook[contact_id][NAME]
+                        ) or phonebook[contact_id].name
         new_lastname = input(text.input_changed_lastname_txt
-                        ) or phonebook[contact_id][LAST_NAME]
+                        ) or phonebook[contact_id].last_name
         new_phone = input(text.input_changed_phone_txt
-                        ) or phonebook[contact_id][PHONE]
+                        ) or phonebook[contact_id].phone
         new_title = input(text.input_changed_title_txt
-                        ) or phonebook[contact_id][TITLE]
+                        ) or phonebook[contact_id].title
         return (new_name, new_lastname, new_phone, new_title)
     else:
         print_error(text.contact_id_err_msg)
