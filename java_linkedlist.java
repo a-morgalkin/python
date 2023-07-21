@@ -1,6 +1,3 @@
-import javax.print.attribute.standard.Sides;
-import javax.sound.midi.Soundbank;
-
 public class java_linkedlist {
 
     public static void main(String[] args) {
